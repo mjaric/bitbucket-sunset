@@ -120,7 +120,22 @@ def apply_permissions(
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Apply GitHub repository permissions from effective CSV")
+    p = argparse.ArgumentParser(
+        description=(
+            "Apply effective per-user permissions to GitHub repositories.\n\n"
+            "What it does:\n"
+            "- Reads effective_repo_user_permissions.csv produced by the expand step.\n"
+            "- Resolves user emails to GitHub logins using a mapping CSV.\n"
+            "- Grants 'pull', 'push', or 'admin' on repos named ORG/${PROJECT_KEY}-${REPO_SLUG}.\n"
+            "- Skips users without a mapping unless --default-missing is provided.\n\n"
+            "Example:\n"
+            "  uv run python -m bitbucket_sunset apply \\\n"
+            "    --token $GH_TOKEN --org your-org \\\n"
+            "    --effective-csv out/effective_repo_user_permissions.csv \\\n"
+            "    --mapping-csv email_github_login.csv --dry-run"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     p.add_argument("--token", dest="github_token", required=True, help="GitHub token with admin rights")
     p.add_argument("--org", required=True, help="Target GitHub organization")
     p.add_argument("--effective-csv", default="out/effective_repo_user_permissions.csv", help="Effective CSV path")

@@ -93,7 +93,25 @@ def expand(
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Expand group permissions to effective per-user permissions")
+    p = argparse.ArgumentParser(
+        description=(
+            "Expand group-based Bitbucket permissions into effective per-user permissions.\n\n"
+            "What it does:\n"
+            "- Reads repo_user_permissions.csv (direct user permissions).\n"
+            "- Reads repo_group_permissions.csv (group permissions per repo).\n"
+            "- Reads group_members.csv (group → user,email).\n"
+            "- Produces effective per-user repo permissions, merging sources; strongest wins.\n\n"
+            "Output:\n"
+            "- effective_repo_user_permissions.csv with columns: project_key,repo_slug,email,permission,source,source_principal\n\n"
+            "Example:\n"
+            "  uv run python -m bitbucket_sunset expand \\\n"
+            "    --user-permissions out/repo_user_permissions.csv \\\n"
+            "    --group-permissions out/repo_group_permissions.csv \\\n"
+            "    --group-members out/group_members.csv \\\n"
+            "    --output out/effective_repo_user_permissions.csv"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     p.add_argument("--user-permissions", required=True, help="Path to repo_user_permissions.csv")
     p.add_argument("--group-permissions", required=True, help="Path to repo_group_permissions.csv")
     p.add_argument("--group-members", required=True, help="Path to group_members.csv")

@@ -10,31 +10,46 @@ from . import apply_github_permissions as apply_mod
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="bitbucket-sunset", description="Migrate Bitbucket DC repo permissions to GitHub Enterprise")
+    p = argparse.ArgumentParser(
+        prog="bitbucket-sunset",
+        description="Migrate Bitbucket DC repo permissions to GitHub Enterprise. Use subcommands to extract, expand, and apply permissions.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     sub = p.add_subparsers(dest="cmd", required=False)
+
+    # Build parent parsers once so we can reuse their descriptions
+    extract_parent = extract_mod.build_arg_parser()
+    expand_parent = expand_mod.build_arg_parser()
+    apply_parent = apply_mod.build_arg_parser()
 
     # extract
     p_extract = sub.add_parser(
         "extract",
         help="Extract Bitbucket permissions to CSVs",
-        parents=[extract_mod.build_arg_parser()],
+        parents=[extract_parent],
         add_help=False,
+        description=extract_parent.description,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
     # expand
     p_expand = sub.add_parser(
         "expand",
         help="Expand group permissions to effective per-user permissions",
-        parents=[expand_mod.build_arg_parser()],
+        parents=[expand_parent],
         add_help=False,
+        description=expand_parent.description,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
     # apply
     p_apply = sub.add_parser(
         "apply",
         help="Apply effective permissions into GitHub",
-        parents=[apply_mod.build_arg_parser()],
+        parents=[apply_parent],
         add_help=False,
+        description=apply_parent.description,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
     return p

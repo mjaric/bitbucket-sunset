@@ -118,7 +118,25 @@ def extract(
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Extract Bitbucket DC repo permissions to CSV files")
+    p = argparse.ArgumentParser(
+        description=(
+            "Extract Bitbucket Data Center repository permissions into CSV files.\n\n"
+            "What it does:\n"
+            "- Lists per-repo direct user permissions and group permissions.\n"
+            "- Exports group membership (so you can later expand groups to users).\n"
+            "- Uses email as the unique user identifier.\n\n"
+            "Outputs (in --output-dir):\n"
+            "- repo_user_permissions.csv\n"
+            "- repo_group_permissions.csv\n"
+            "- group_members.csv\n\n"
+            "Example:\n"
+            "  uv run python -m bitbucket_sunset extract \\\n"
+            "    --base-url https://bitbucket.example.com \\\n"
+            "    --token $BB_TOKEN \\\n"
+            "    --project PROJ --dry-run"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     p.add_argument("--base-url", required=True, help="Bitbucket DC base URL, e.g. https://bitbucket.example.com")
     auth = p.add_mutually_exclusive_group(required=True)
     auth.add_argument("--token", help="Bitbucket personal access token")
