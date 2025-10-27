@@ -1,0 +1,15 @@
+[project]
+name = "bitbucket-sunset"
+version = "0.1.0"
+description = "Scripts to migrate Bitbucket DC repository permissions to GitHub Enterprise"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "requests>=2.31",
+    "PyGithub>=2.3.0",
+]
+
+[project.scripts]
+bitbucket-sunset = "bitbucket_sunset.cli:main"
+
+
